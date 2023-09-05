@@ -390,7 +390,7 @@ std.mod_start(function(load)
 					if _'@xkeyboard'.numeric and not std.tonum(key) and key ~= 'backspace' and key ~= 'return' then
 						return false
 					end
-					dprint("KEYPRESS 1", key, f, s, press)
+					-- dprint("KEYPRESS 1", key, f, s, press)
 					if press then
 						if  key == 'space' or key == 'backspace' or key == 'return' or key == 'escape' then
 							_'@xkeyboard':update("act", key)
@@ -398,17 +398,17 @@ std.mod_start(function(load)
 					end
 					return hook_keys[key]
 				end
-				dprint("KEYPRESS 2", f, s, press, key)
+				-- dprint("KEYPRESS 2", f, s, press, key)
 				return f(s, press, key)
 		end))
 		orig_text = std.rawget(input, 'text')
 		std.rawset(input, 'text', std.hook(input.text,
 		function(f, s, text, ...)
 				if _'@xkeyboard'.my and text ~= " " and  use_text_event() then
-					dprint("KEYPRESS 3", text)
+					-- dprint("KEYPRESS 3", text)
 					return _'@xkeyboard':update("write", text)
 				end
-				dprint("KEYPRESS 4", f, s, text)
+				-- dprint("KEYPRESS 4", f, s, text)
 			return f(s, text, ...)
 		end))
 	end

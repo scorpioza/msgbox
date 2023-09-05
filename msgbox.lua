@@ -200,8 +200,8 @@ obj {
         if command == "act" and data == 'escape' then
             s.hide(s)
         elseif command == "act" and  data == 'return' then
-            update_msg = text
             s.hide(s)
+            update_msg = text
         else
             DU('msginput')
             DU('msgtext')
@@ -215,8 +215,10 @@ obj {
 
 function game:timer()
     if update_msg then
-        std.call(std.here(), 'onmsg', update_msg, std.unpack(_'@msgbox'.args))
+        local r = std.call(std.here(), 'onmsg', update_msg, std.unpack(_'@msgbox'.args))
+        pr(r)
         update_msg = false
+        return true
     end
 
 	return false

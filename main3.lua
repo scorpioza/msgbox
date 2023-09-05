@@ -1,8 +1,30 @@
 require "msgbox"
 
+-- msgbox
+--
+-- Два способа открыть окно с вопросом:
+-- 1) msgbox:show("Заголовок")
+-- 2) Из текста: [[Текст моего {@msgbox "Заголовок окна"|вопроса}?]]
+-- 
+-- Закрыть программно:
+-- msgbox:hide()
+--
+-- Получить результат:
+-- В комнате добавляется обработчик onmsg = function(s, w). Результат в w
+
+game.act = 'Не работает.';
+game.use = 'Это не поможет.';
+game.inv = 'Зачем мне это?';
+
 obj {
     nam = 'kname';
-    dsc = [[Расскажи мне, как зовут твоего {кота} - второй вариант вызова окна]];
+    dsc = function(s)
+		if std.here().name then
+			pn ("Добрый день, ", std.here().name, ".")
+		else
+			pn [[Расскажи мне, как зовут твоего {кота} - второй вариант вызова окна]];
+		end
+	end;
     act = function()
 		p [[Во всплывающем окне введите ваше имя или имя вашего котика.]];
 
@@ -10,9 +32,18 @@ obj {
     end;
 }
 
+declare 'box' (function()
+	return obj {
+		nam = 'коробка с котом';
+		dsc = [[Тут лежит {коробка}.]];
+		tak = [[Я взял коробку.]];
+	}
+end)
+
+
 obj {
 	nam = 'gotoend';
-	dsc = [[Прогуляйся в {конец}]];
+	dsc = [[Прогуляйся в {конец}, словно уже ввёл правильный ответ]];
 	act = function()
 		walk 'theend'
 		return
@@ -26,15 +57,9 @@ room {
 
 	name = false;
 
-	dsc = function(s)
-		if s.name then
-			p ("Привет, ", s.name)
-		else
-			p [[Как зовут твоего {@msgbox "Имя"|кота}? - первый вариант вызова окна]];
-		end
-	end;
+	dsc = [[Как зовут твоего {@msgbox "Имя котика"|кота}? - первый вариант вызова окна]];
 
-    obj = { 'kname', 'gotoend' };
+    obj = { 'kname', 'gotoend'};
 
 	onmsg = function(s, w)
 
@@ -46,6 +71,8 @@ room {
 		if s.name then
 			dprint("Имя кота: ", s, s.name)
 			pn ("Привет, ", s.name)
+			local o = new (box);
+			take(o);
 		end
 
 	end;
@@ -54,11 +81,23 @@ room {
 	end 
 }
 
+obj {
+	nam = 'gotomain';
+	dsc = [[Прогуляйся в {начало}]];
+	act = function()
+		walk 'main'
+		return
+	end;		
+}
+
 room {
 	nam = 'theend';
 	title = 'Конец';
 	dsc = [[WOW! Вы назвали верное имя кота]];
+	obj = { 'gotomain'};
+
 }
+
 
 
 
